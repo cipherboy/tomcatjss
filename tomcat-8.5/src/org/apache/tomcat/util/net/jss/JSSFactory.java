@@ -26,7 +26,7 @@ import org.apache.tomcat.util.net.AbstractEndpoint;
 import org.apache.tomcat.util.net.SSLSupport;
 import org.mozilla.jss.ssl.SSLSocket;
 
-class JSSFactory implements IJSSFactory {
+class JSSFactory {
     JSSFactory() {
     }
 

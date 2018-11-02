@@ -153,7 +153,7 @@ public class JSSUtil implements
             tomcatjss.init();
 
         } catch (Exception ex) {
-            logger.error("JSSUtil: " + ex);
+            logger.error("JSSSocketFactory: " + ex);
             // The idea is, if admin take the trouble to configure the
             // ocsp cache, and made a mistake, we want to make server
             // unavailable until they get it right
@@ -161,27 +161,6 @@ public class JSSUtil implements
                     || (ex instanceof java.lang.NumberFormatException))
                 throw new IOException(ex);
         }
-    }
-
-    public Socket acceptSocket(ServerSocket socket) throws IOException {
-        SSLSocket asock = null;
-        try {
-            asock = (SSLSocket) socket.accept();
-            asock.addSocketListener(tomcatjss);
-
-            if (tomcatjss.getRequireClientAuth() || tomcatjss.getWantClientAuth()) {
-                asock.requestClientAuth(true);
-                if (tomcatjss.getRequireClientAuth()) {
-                    asock.requireClientAuth(SSLSocket.SSL_REQUIRE_ALWAYS);
-                } else {
-                    asock.requireClientAuth(SSLSocket.SSL_REQUIRE_NEVER);
-                }
-            }
-        } catch (Exception e) {
-            throw new SocketException("SSL handshake error " + e.toString());
-        }
-
-        return asock;
     }
 
     public void handshake(Socket sock) throws IOException {
@@ -233,7 +212,7 @@ public class JSSUtil implements
 
     // Methods required to "implement" Tomcat 8.5+ Interface
     public SSLContext createSSLContext(List<String> negotiableProtocols) throws Exception {
-        return null;
+        return new JSSContext(negotiableProtocols, config);
     }
 
     public KeyManager[] getKeyManagers() throws Exception {
