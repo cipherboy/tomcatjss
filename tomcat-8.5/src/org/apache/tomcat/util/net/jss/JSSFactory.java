@@ -30,8 +30,8 @@ class JSSFactory implements IJSSFactory {
     JSSFactory() {
     }
 
-    public JSSSocketFactory getSocketFactory(Properties config) {
-        return new JSSSocketFactory(config);
+    public JSSUtil getSSLUtil(Properties config) {
+        return new JSSUtil(config);
     }
 
     public SSLSupport getSSLSupport(Socket socket) {

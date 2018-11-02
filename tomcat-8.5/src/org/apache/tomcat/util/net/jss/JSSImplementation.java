@@ -57,12 +57,6 @@ public class JSSImplementation extends SSLImplementation {
         return "JSS";
     }
 
-    public SSLSupport getSSLSupport(Socket s) {
-        SSLSupport ssls = null;
-        ssls = factory.getSSLSupport(s);
-        return ssls;
-    }
-
     public SSLSupport getSSLSupport(javax.net.ssl.SSLSession session) {
         /*
          * The Tomcat 6.0.26 docs says: This method has been deprecated since it
@@ -86,7 +80,7 @@ public class JSSImplementation extends SSLImplementation {
          * Once this abstract method is removed from SSLImplementation in a
          * future release we can remove this stub.
          *
-         * NOTE: This method has NOT yet been deprecated in Tomcat 7!
+         * NOTE: This method has NOT yet been deprecated in Tomcat 8.5+!
          */
         return null;
     }
@@ -107,6 +101,6 @@ public class JSSImplementation extends SSLImplementation {
             throw new RuntimeException(e);
         }
 
-        return factory.getSocketFactory(config);
+        return factory.getSSLUtil(config);
     }
 }
