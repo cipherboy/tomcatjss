@@ -25,35 +25,30 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Properties;
+import java.util.List;
 
 import javax.net.ssl.KeyManager;
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSessionContext;
 import javax.net.ssl.TrustManager;
 
 // Imports required to "implement" Tomcat 7 Interface
 import org.apache.tomcat.util.net.AbstractEndpoint;
+import org.apache.tomcat.util.net.SSLContext;
 import org.mozilla.jss.ssl.SSLServerSocket;
 import org.mozilla.jss.ssl.SSLSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JSSSocketFactory implements
-        org.apache.tomcat.util.net.ServerSocketFactory,
         org.apache.tomcat.util.net.SSLUtil {
 
     public static Logger logger = LoggerFactory.getLogger(JSSSocketFactory.class);
 
     TomcatJSS tomcatjss = TomcatJSS.getInstance();
 
-    private AbstractEndpoint<?> endpoint;
     private Properties config;
 
-    public JSSSocketFactory(AbstractEndpoint<?> endpoint) {
-        this(endpoint, null);
-    }
-
-    public JSSSocketFactory(AbstractEndpoint<?> endpoint, Properties config) {
-        this.endpoint = endpoint;
+    public JSSSocketFactory(Properties config) {
         this.config = config;
 
         try {
@@ -64,20 +59,12 @@ public class JSSSocketFactory implements
     }
 
     String getProperty(String tag) {
-
-        // check <catalina.base>/conf/server.xml
-        String value = (String)endpoint.getAttribute(tag);
-
         // if not available, check <catalina.base>/conf/tomcatjss.conf
-        if (value == null) {
-            value = config.getProperty(tag);
-        }
-
-        return value;
+        return config.getProperty(tag);
     }
 
     String getProperty(String tag, String defaultValue) {
-        String value = getProperty(tag);
+        String value = config.getProperty(tag);
         if (value == null) {
             return defaultValue;
         }
@@ -244,8 +231,8 @@ public class JSSSocketFactory implements
         }
     }
 
-    // Methods required to "implement" Tomcat 7 Interface
-    public SSLContext createSSLContext() throws Exception {
+    // Methods required to "implement" Tomcat 8.5+ Interface
+    public SSLContext createSSLContext(List<String> negotiableProtocols) throws Exception {
         return null;
     }
 
@@ -262,11 +249,11 @@ public class JSSSocketFactory implements
         return;
     }
 
-    public String[] getEnableableCiphers(SSLContext context) {
+    public String[] getEnabledCiphers() {
         return null;
     }
 
-    public String[] getEnableableProtocols(SSLContext context) {
+    public String[] getEnabledProtocols() {
         return null;
     }
 }

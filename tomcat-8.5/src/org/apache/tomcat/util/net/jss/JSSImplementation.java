@@ -26,10 +26,10 @@ import java.net.Socket;
 import java.util.Properties;
 
 import org.apache.tomcat.util.net.AbstractEndpoint;
+import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 import org.apache.tomcat.util.net.SSLImplementation;
 import org.apache.tomcat.util.net.SSLSupport;
 import org.apache.tomcat.util.net.SSLUtil;
-import org.apache.tomcat.util.net.ServerSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,22 +55,6 @@ public class JSSImplementation extends SSLImplementation {
 
     public String getImplementationName() {
         return "JSS";
-    }
-
-    public ServerSocketFactory getServerSocketFactory(AbstractEndpoint<?> endpoint) {
-
-        Properties config = new Properties();
-
-        try {
-            String configFile = System.getProperty("catalina.base") + "/conf/tomcatjss.conf";
-            config.load(new FileReader(configFile));
-        } catch (FileNotFoundException e) {
-            // ignore
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return factory.getSocketFactory(endpoint, config);
     }
 
     public SSLSupport getSSLSupport(Socket s) {
@@ -107,7 +91,22 @@ public class JSSImplementation extends SSLImplementation {
         return null;
     }
 
-    public SSLUtil getSSLUtil(AbstractEndpoint<?> endpoint) {
-        return null;
+    public boolean isAlpnSupported() {
+        return false;
+    }
+
+    public SSLUtil getSSLUtil(SSLHostConfigCertificate certificate) {
+        Properties config = new Properties();
+
+        try {
+            String configFile = System.getProperty("catalina.base") + "/conf/tomcatjss.conf";
+            config.load(new FileReader(configFile));
+        } catch (FileNotFoundException e) {
+            // ignore
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return factory.getSocketFactory(config);
     }
 }

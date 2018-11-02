@@ -41,7 +41,7 @@ class JSSSupport implements SSLSupport {
         }
     }
 
-    public X509Certificate[] getPeerCertificateChain(boolean force)
+    public X509Certificate[] getPeerCertificateChain()
             throws IOException {
         // retrieve the status when we need it. status cache
         // the client certificate which may not be available
@@ -77,10 +77,6 @@ class JSSSupport implements SSLSupport {
         }
 
         return null;
-    }
-
-    public Object[] getPeerCertificateChain() throws IOException {
-        return getPeerCertificateChain(false);
     }
 
     public String getCipherSuite() throws IOException {

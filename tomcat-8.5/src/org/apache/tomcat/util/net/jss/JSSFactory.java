@@ -24,15 +24,14 @@ import java.util.Properties;
 
 import org.apache.tomcat.util.net.AbstractEndpoint;
 import org.apache.tomcat.util.net.SSLSupport;
-import org.apache.tomcat.util.net.ServerSocketFactory;
 import org.mozilla.jss.ssl.SSLSocket;
 
 class JSSFactory implements IJSSFactory {
     JSSFactory() {
     }
 
-    public ServerSocketFactory getSocketFactory(AbstractEndpoint<?> endpoint, Properties config) {
-        return new JSSSocketFactory(endpoint, config);
+    public JSSSocketFactory getSocketFactory(Properties config) {
+        return new JSSSocketFactory(config);
     }
 
     public SSLSupport getSSLSupport(Socket socket) {
