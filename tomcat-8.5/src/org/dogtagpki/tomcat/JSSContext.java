@@ -17,6 +17,7 @@ import org.mozilla.jss.JSSProvider;
 import org.mozilla.jss.provider.javax.crypto.JSSKeyManager;
 import org.mozilla.jss.provider.javax.crypto.JSSTrustManager;
 import org.mozilla.jss.ssl.javax.JSSEngine;
+import org.mozilla.jss.ssl.javax.JSSEngineReferenceImpl;
 import org.mozilla.jss.ssl.javax.JSSParameters;
 
 import org.slf4j.Logger;
@@ -30,6 +31,8 @@ public class JSSContext implements org.apache.tomcat.util.net.SSLContext {
 
     private JSSKeyManager jkm;
     private JSSTrustManager jtm;
+
+    private static int port = 10000;
 
     public JSSContext(String alias) {
         logger.debug("JSSContext(" + alias + ")");
@@ -71,6 +74,8 @@ public class JSSContext implements org.apache.tomcat.util.net.SSLContext {
         if (eng instanceof JSSEngine) {
             JSSEngine j_eng = (JSSEngine) eng;
             j_eng.setCertFromAlias(alias);
+            ((JSSEngineReferenceImpl) j_eng).enableSafeDebugLogging(port);
+            port += 1;
         }
 
         return eng;
